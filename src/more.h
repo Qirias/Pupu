@@ -9,10 +9,11 @@
 #define IMAGE_HEIGHT 74  // Height of the image in pixels
 
 
-const uint16_t* sit[] = {sit0, sit1};
-const uint16_t* sleepy[] = {sleep0, sleep1, sleep2, sleep1};
+const uint16_t* sit[] = {sit7, sit6, sit5, sit4, sit3, sit2, sit1, sit0, sit1};
+const uint16_t* sleepy[] = {sit2, sit3, sit4, sit5, sit6, sit7, sleep0, sleep1, sleep2, sleep1};
 const uint16_t* stand[] = {stand0, stand1, stand2, stand3, stand4, stand5, stand4, stand3, stand2, stand1};
 const uint16_t* jump[] = {jump0, jump1, jump2, jump3, jump4, jump5};
+
 
 const uint16_t* sit_sleep[] = {sit0, sit1, sit2, sit3, sit4, sit5, sit6, sit7};
 const uint16_t* sleep_sit[] = {sit7, sit6, sit5, sit4, sit3, sit2, sit1, sit0};
@@ -29,17 +30,31 @@ std::vector<std::vector<int>> sequence = {
     {2,0,3}
 };
 
+
 std::vector<std::vector<int>> allowedSeq = {
-    {1,2,5,6,7,8},
-    {0,2},
-    {0,1,5,6,7,8},
+    {1,2,5,6},
+    {0,2,3,5,6,7,8},
+    {0,1,5,6},
     {0,1,2,5,6},
-    {0,1,2,5,6,7,8},
+    {0,1,2,5,6},
     {0,1,2,3,4,6,7,8},
     {0,1,2,5,7,8},
     {0,1,2,5,6,8},
     {0,1,2,3,4}
 };
+
+std::vector<std::vector<int>> timers = {
+    {20, 40, 60},
+    {120, 240, 360},
+    {4, 5, 6},
+    {8, 10, 12}
+};
+
+std::vector<int> frameDuration = {600, 800, 500, 250};
+
+std::vector<uint16_t> background = {TFT_BLACK, TFT_NAVY, TFT_DARKCYAN, TFT_MAROON,
+                                    TFT_PURPLE, TFT_LIGHTGREY, TFT_DARKGREY,
+                                    TFT_ORANGE, TFT_PINK, TFT_BROWN, TFT_SILVER, TFT_SKYBLUE, TFT_VIOLET};
 
 class Behaviour {
 public:
@@ -94,7 +109,7 @@ public:
             if (std::find(allowedSeq[_behaviour.prevState].begin(), allowedSeq[_behaviour.prevState].end(), sequence[index][0]) != allowedSeq[_behaviour.prevState].end())
                 break;
         }
-        std::cout << "Sequence index: " << index << "\n";
+        // std::cout << "Sequence index: " << index << "\n";
         return sequence[index];
     }
 
