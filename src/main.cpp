@@ -13,6 +13,7 @@ void drawSnow(const uint16_t* frameData);
 uint32_t convertColor(float r, float g, float b);
 void updateSnowflakes();
 void drawSnowflakes();
+void cleanBunny();
 
 TFT_eSPI tft = TFT_eSPI();  // Create TFT_eSPI object
 
@@ -45,7 +46,6 @@ bool butPressed = false;
 int colorIndex = 0;
 
 int currentFrame = 0;
-// int frameDuration = 600;
 StateMachine bunny;
 std::vector<int> currentSeq;
 int offsetX = 0;
@@ -88,6 +88,7 @@ void loop() {
 
       if (digitalRead(BUTTON_PIN1) == LOW && bunny._behaviour.state == Behaviour::States::sleepy) {
         currentSeq = bunny.getRandomSeq();
+        currentFrame = 0;
         i = 0;
         break;
       }
@@ -103,16 +104,14 @@ void loop() {
       bunny._behaviour.state = currentSeq[i];
       if (currentTime - lastFrameTime >= frameDuration[bunny._behaviour.state]) {
         bunny.elapsedTime = (esp_timer_get_time() / 1000000.0) - bunny.prevTime;
-
-        
-        if (tft.width() - offsetX - BUNNY_WIDTH < 0 || tft.width() - offsetX - BUNNY_WIDTH > 195) {
-          bunny._behaviour.state = Behaviour::States::jump;
-        }
+      
+      if (tft.width() - offsetX - BUNNY_WIDTH < 0 || tft.width() - offsetX - BUNNY_WIDTH > 195) {
+        bunny._behaviour.state = Behaviour::States::jump;
+      }      
 
         switch (bunny._behaviour.state) {
           case Behaviour::States::sit: {
-            tft.fillRect(tft.width() - offsetX - BUNNY_WIDTH, tft.height() - BUNNY_HEIGHT, BUNNY_WIDTH, BUNNY_HEIGHT, background[colorIndex]);
-
+            cleanBunny();
             if (bunny._behaviour.prevState == Behaviour::States::sleepy) {
               bunny._behaviour.frames = 9;
               drawFrame(sit[currentFrame], offsetX);
@@ -124,7 +123,7 @@ void loop() {
             }
           } break;
           case Behaviour::States::sleepy: {
-            tft.fillRect(tft.width() - offsetX - BUNNY_WIDTH, tft.height() - BUNNY_HEIGHT, BUNNY_WIDTH, BUNNY_HEIGHT, background[colorIndex]);
+            cleanBunny();
             if (bunny._behaviour.prevState == Behaviour::States::sit) {
               bunny._behaviour.frames = 10;
               drawFrame(sleepy[currentFrame], offsetX);
@@ -136,17 +135,17 @@ void loop() {
             }
           } break;
           case Behaviour::States::stand: {
-            tft.fillRect(tft.width() - offsetX - BUNNY_WIDTH, tft.height() - BUNNY_HEIGHT - 10, BUNNY_WIDTH, BUNNY_HEIGHT, background[colorIndex]);
+            cleanBunny();
             bunny._behaviour.frames = 10;
             drawFrame(stand[currentFrame], offsetX);
           } break;
           case Behaviour::States::jump: {
-            tft.fillRect(tft.width() - offsetX - BUNNY_WIDTH, tft.height() - BUNNY_HEIGHT, BUNNY_WIDTH, BUNNY_HEIGHT, background[colorIndex]);
+            cleanBunny();
             bunny._behaviour.frames = 6;
             if (tft.width() - offsetX - BUNNY_WIDTH < -55) {
               offsetX = -55;
             } else {
-              tft.fillRect(tft.width() - offsetX - BUNNY_WIDTH, tft.height() - BUNNY_HEIGHT, BUNNY_WIDTH, BUNNY_HEIGHT, background[colorIndex]);
+              cleanBunny();
               if (currentFrame % bunny._behaviour.frames != 5)
                 offsetX += 10;
             }
@@ -162,11 +161,14 @@ void loop() {
         // bunny._behaviour.print();
         numOfSprites--;
 
-
         if (bunny.elapsedTime <= timers[bunny._behaviour.state][random(0, 2)] && numOfSprites == 0) {
           numOfSprites = bunny.getNumOfSprites(currentSeq[i]);
         }
       }
+
+      auto scan = tft.read_gscan();
+      // if (scan != 0)
+        std::cout << scan << "\n";
 
       drawSnow(snow);
     } // while
@@ -222,11 +224,15 @@ void updateSnowflakes() {
   }
 }
 
+void cleanBunny() {
+  tft.fillRect(tft.width() - offsetX - BUNNY_WIDTH, tft.height() - BUNNY_HEIGHT - 11, BUNNY_WIDTH, BUNNY_HEIGHT + 5, background[colorIndex]);
+}
+
 void drawSnowflakes() {
   for (const auto& snowflake : snowflakes) {
     // Draw snowflake at updated position
     if (tft.readPixel(snowflake.x, snowflake.y) == background[colorIndex])
-      tft.drawPixel(snowflake.x, snowflake.y, convertColor(255,255,255), random(32,160), background[colorIndex]);
+      tft.drawPixel(snowflake.x, snowflake.y, convertColor(255,255,255), (background[colorIndex] == TFT_BLACK)?random(32,160):255, background[colorIndex]);
   }
 }
 

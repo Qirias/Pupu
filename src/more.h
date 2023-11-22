@@ -14,10 +14,6 @@ const uint16_t* sleepy[] = {sit2, sit3, sit4, sit5, sit6, sit7, sleep0, sleep1, 
 const uint16_t* stand[] = {stand0, stand1, stand2, stand3, stand4, stand5, stand4, stand3, stand2, stand1};
 const uint16_t* jump[] = {jump0, jump1, jump2, jump3, jump4, jump5};
 
-
-const uint16_t* sit_sleep[] = {sit0, sit1, sit2, sit3, sit4, sit5, sit6, sit7};
-const uint16_t* sleep_sit[] = {sit7, sit6, sit5, sit4, sit3, sit2, sit1, sit0};
-
 std::vector<std::vector<int>> sequence = {
     {0,2,3},
     {0,2},
@@ -46,15 +42,15 @@ std::vector<std::vector<int>> allowedSeq = {
 std::vector<std::vector<int>> timers = {
     {20, 40, 60},
     {120, 240, 360},
-    {4, 5, 6},
-    {8, 10, 12}
+    {2, 2, 2},
+    {7, 15, 19}
 };
 
-std::vector<int> frameDuration = {600, 800, 500, 250};
+std::vector<int> frameDuration = {600, 800, 500, 200};
 
-std::vector<uint16_t> background = {TFT_BLACK, TFT_NAVY, TFT_DARKCYAN, TFT_MAROON,
-                                    TFT_PURPLE, TFT_LIGHTGREY, TFT_DARKGREY,
-                                    TFT_ORANGE, TFT_PINK, TFT_BROWN, TFT_SILVER, TFT_SKYBLUE, TFT_VIOLET};
+std::vector<uint16_t> background = {TFT_BLACK, TFT_DARKCYAN,
+                                    TFT_LIGHTGREY, TFT_DARKGREY,
+                                    TFT_PINK, TFT_SILVER, TFT_SKYBLUE};
 
 class Behaviour {
 public:
