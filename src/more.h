@@ -41,7 +41,7 @@ std::vector<std::vector<int>> allowedSeq = {
 
 std::vector<std::vector<int>> timers = {
     {20, 40, 60},
-    {120, 240, 360},
+    {60, 120, 240},
     {2, 2, 2},
     {7, 15, 19}
 };

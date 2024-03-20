@@ -166,9 +166,9 @@ void loop() {
         }
       }
 
-      auto scan = tft.read_gscan();
+      // auto scan = tft.read_gscan();
       // if (scan != 0)
-        std::cout << scan << "\n";
+        // std::cout << scan << "\n";
 
       drawSnow(snow);
     } // while
@@ -183,7 +183,7 @@ void loop() {
   bunny._behaviour.currFrame = 0;
 
   // Pause to control the snowfall speed
-  delay(100);
+  // delay(100);
 }
 
 void drawFrame(const uint16_t* frameData, int offsetX) {
@@ -232,7 +232,10 @@ void drawSnowflakes() {
   for (const auto& snowflake : snowflakes) {
     // Draw snowflake at updated position
     if (tft.readPixel(snowflake.x, snowflake.y) == background[colorIndex])
-      tft.drawPixel(snowflake.x, snowflake.y, convertColor(255,255,255), (background[colorIndex] == TFT_BLACK)?random(32,160):255, background[colorIndex]);
+      tft.drawPixel(snowflake.x, snowflake.y, (background[colorIndex] == TFT_LIGHTGREY 
+                                            || background[colorIndex] == TFT_DARKGREY 
+                                            || background[colorIndex] == TFT_SILVER)?convertColor(random(32,255),random(32,255),random(32,255)):convertColor(255,255,255), 
+                                            (background[colorIndex] == TFT_BLACK)?random(32,160):255, background[colorIndex]);
   }
 }
 
